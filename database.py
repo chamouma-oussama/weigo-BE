@@ -3,7 +3,7 @@ import sqlite3
 from config import DB_NAME
 
 def init_db():
-    """تهيئة قاعدة البيانات وإنشاء جدول السجلات التنبؤية وجدول المستخدمين"""
+    """Preparing the database and creating the predictive records table and the users table"""
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -53,7 +53,7 @@ def init_db():
             conn.close()
 
 def log_prediction(data, bmi, probability):
-    """حفظ مدخلات المستخدم ونسبة النجاح المحسوبة بأمان"""
+    """Securely saves user input and calculated success rate"""
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -94,7 +94,7 @@ def log_prediction(data, bmi, probability):
             conn.close()
 
 def add_user(username, full_name, password):
-    """إضافة مستخدم جديد إلى قاعدة البيانات والتحقق من عدم تكرار اسم المستخدم"""
+    """Adding a new user to the database and checking that the username is not duplicated."""
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -121,7 +121,7 @@ def add_user(username, full_name, password):
 
 # 🌟 هذه هي الدالة التي كانت مفقودة وتسببت في ظهور الـ ImportError
 def verify_user(username, password):
-    """التحقق من صحة اسم المستخدم وكلمة المرور عند تسجيل الدخول"""
+    """Verify your username and password upon login"""
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
