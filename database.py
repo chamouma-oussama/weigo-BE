@@ -107,14 +107,14 @@ def add_user(username, full_name, password):
         
         conn.commit()
         print(f"👤 Account created successfully for user: {username}")
-        return True, "تم إنشاء الحساب بنجاح!"
+        return True, "Account created successfully!"
         
     except sqlite3.IntegrityError:
         print(f"⚠️ Registration failed: Username '{username}' already exists.")
-        return False, "اسم المستخدم مسجل مسبقاً، يرجى اختيار اسم آخر."
+        return False, "Username is already registered, please choose another name."
     except Exception as e:
         print(f"⚠️ Error during registration query: {str(e)}")
-        return False, f"خطأ في قاعدة البيانات: {str(e)}"
+        return False, f"Database error: {str(e)}"
     finally:
         if conn:
             conn.close()
@@ -138,11 +138,11 @@ def verify_user(username, password):
             return True, user[0]
         else:
             print(f"🔒 Failed login attempt for user: {username}")
-            return False, "اسم المستخدم أو كلمة المرور غير صحيحة"
+            return False, "Incorrect username or password"
             
     except Exception as e:
         print(f"⚠️ Error during login query: {str(e)}")
-        return False, f"خطأ في قاعدة البيانات: {str(e)}"
+        return False, f"Database error: {str(e)}"
     finally:
         if conn:
             conn.close()
