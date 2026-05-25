@@ -1,8 +1,8 @@
-# model_trainer.py
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+# 🌟 أضفنا confusion_matrix إلى مكتبة الاستيراد هنا
+from sklearn.metrics import accuracy_score, confusion_matrix
 from config import FEATURE_COLUMNS
 
 model_accuracy = 0.0
@@ -41,6 +41,21 @@ def train_model():
         
         model_accuracy = calculated_accuracy
         rf_model.saved_accuracy = calculated_accuracy  
+        
+        # -------------------------------------------------------------
+        # 🌟 الجزء الجديد: حساب وطباعة مصفوفة الارتباك (Confusion Matrix) 🌟
+        # -------------------------------------------------------------
+        conf_matrix = confusion_matrix(y_test, predictions)
+        
+        print("\n" + "="*50)
+        print("📊 مصفوفة الارتباك (Confusion Matrix) لتقييم النموذج:")
+        print(conf_matrix)
+        print(f"🔹  (True Negative): {conf_matrix[0][0]}")
+        print(f"🔹  (False Positive): {conf_matrix[0][1]}")
+        print(f"🔹  (False Negative): {conf_matrix[1][0]}")
+        print(f"🔹  (True Positive): {conf_matrix[1][1]}")
+        print("="*50 + "\n")
+        # -------------------------------------------------------------
         
         # 7. 🌟 إعادة تدريب النموذج على كامل الداتا لرفع الكفاءة التشغيلية داخل التطبيق
         rf_model.fit(X, y)

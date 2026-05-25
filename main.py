@@ -22,7 +22,7 @@ def register():
     try:
         data = request.json
         if not data:
-            return jsonify({"status": "error", "message": "لم يتم استقبال أي بيانات"}), 400
+            return jsonify({"status": "error", "message": "No data received"}), 400
             
         first_name = data.get('first_name')
         last_name = data.get('last_name')
@@ -32,14 +32,14 @@ def register():
         if not username or not password or not first_name or not last_name:
             return jsonify({
                 "status": "validation_error", 
-                "message": "الرجاء ملء جميع الحقول المطلوبة في السيرفر"
+                "message": "Please fill in all the required fields on the server"
             }), 400
 
         full_name = f"{first_name} {last_name}"
         success, message = add_user(str(username).strip(), str(full_name).strip(), str(password))
         
         if success:
-            return jsonify({"status": "success", "message": "تم إنشاء الحساب بنجاح وبأمان!"}), 200
+            return jsonify({"status": "success", "message": "Account created successfully and securely"}), 200
         else:
             return jsonify({"status": "validation_error", "message": message}), 400
 
@@ -53,7 +53,7 @@ def login():
     try:
         data = request.json
         if not data:
-            return jsonify({"status": "error", "message": "لم يتم استقبال أي بيانات"}), 400
+            return jsonify({"status": "error", "message": "No data was received"}), 400
             
         username = data.get('username')
         password = data.get('password')
@@ -61,7 +61,7 @@ def login():
         if not username or not password:
             return jsonify({
                 "status": "validation_error", 
-                "message": "اسم المستخدم وكلمة المرور مطلوبان"
+                "message": "Username and password required"
             }), 400
 
         # استدعاء دالة التحقق من قاعدة البيانات
@@ -70,7 +70,7 @@ def login():
         if success:
             return jsonify({
                 "status": "success", 
-                "message": "تم تسجيل الدخول بنجاح!",
+                "message": "Login successful",
                 "full_name": result_msg
             }), 200
         else:
@@ -153,7 +153,9 @@ def predict():
         
         if calories > daily_needs + 200:
             warnings.append(f"Your caloric intake ({int(calories)} kcal) is high compared to your daily needs ({int(daily_needs)} kcal).")
+            safe_target = max(1200, int(daily_needs - 500))
             recommendations.append(f"Try to target around {int(daily_needs - 500)} kcal for steady and safe fat loss.")
+        
         elif calories < 1200:
             warnings.append("Extremely low calorie consumption detected. This can collapse your metabolism.")
             recommendations.append("Ensure your intake stays above 1200 kcal by including nutrient-dense foods.")
@@ -161,6 +163,10 @@ def predict():
         if water < 2.0:
             warnings.append(f"Low hydration ({water}L) slows down your metabolic rate.")
             recommendations.append("Drink at least 3 liters of water daily to optimize fat burning.")
+
+        elif water > 4.5:
+            warnings.append(f"Excessive water intake ({water}L) can strain your kidneys and risk Hyponatremia (water intoxication).")
+            recommendations.append("Moderate your intake to 3.0 - 3.5 liters daily, distributed evenly throughout the day.")    
             
         if stress >= 4:
             warnings.append("High stress levels can cause emotional eating and fat storage.")
@@ -171,6 +177,23 @@ def predict():
         if sleep < 7:
             warnings.append(f"Sleeping only {sleep} hours triggers high cortisol (stress) and hunger.")
             recommendations.append("Prioritize 7-8 hours of sleep to stabilize your biological rhythm.")
+        elif sleep > 9.5:
+        
+            warnings.append(f"Over-sleeping ({sleep} hours) slows down your metabolic rate and triggers daytime lethargy.")
+            recommendations.append("Aim for a consistent 7-8 hour sleep window and increase your daytime physical activity.")    
+        
+        if data.get('night_eating') == 1:
+            warnings.append("Night eating syndrome delays your metabolic rest and impairs insulin sensitivity.")
+            recommendations.append("Close your eating window at least 3 hours before sleep. Shift your calories to daytime.")    
+        
+        if motivation <= 4:
+            # 🌟 معالجة التحفيز المنخفض 
+            warnings.append(f"Low motivation ({motivation}/10) indicates mental fatigue from previous failed attempts.")
+            recommendations.append("Focus on non-scale victories (like better sleep or higher energy) rather than just the weight number to rebuild your momentum.")
+        elif motivation >= 9:
+            # 🌟 فرملة التحفيز المفرط (حماية من الانتكاسة)
+            warnings.append(f"Extreme motivation ({motivation}/10) can trap you in the 'honeymoon phase', leading to burnout or crash dieting.")
+            recommendations.append("Stay patient. Weight loss is a marathon, not a sprint. Do not cut your calories drastically to chase fast results.")    
 
         if probability > 75:
             msg = "Excellent! You have a high chance of reaching your goal. Keep it up!"
