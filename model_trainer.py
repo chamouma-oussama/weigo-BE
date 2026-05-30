@@ -48,7 +48,7 @@ def train_model():
         conf_matrix = confusion_matrix(y_test, predictions)
         
         print("\n" + "="*50)
-        print("📊 مصفوفة الارتباك (Confusion Matrix) لتقييم النموذج:")
+        print("  (Confusion Matrix) :")
         print(conf_matrix)
         print(f"🔹  (True Negative): {conf_matrix[0][0]}")
         print(f"🔹  (False Positive): {conf_matrix[0][1]}")

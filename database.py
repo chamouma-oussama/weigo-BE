@@ -1,5 +1,5 @@
-# database.py
 import sqlite3
+import re
 from config import DB_NAME
 
 def init_db():
@@ -94,7 +94,19 @@ def log_prediction(data, bmi, probability):
             conn.close()
 
 def add_user(username, full_name, password):
-    """Adding a new user to the database and checking that the username is not duplicated."""
+    """Adding a new user with validation (No hashing)."""
+    
+    # 1. توحيد اسم المستخدم ومنع الرموز الخاصة
+    username = username.lower().strip()
+    if not re.match(r'^[a-z0-9_]{3,20}$', username):
+        return False, "Username must be 3-20 characters (letters, numbers, underscores only)."
+    
+    # 2. التحقق من قوة كلمة السر (لا تقل عن 6 + أحرف وأرقام)
+    if len(password) < 6:
+        return False, "Password must be at least 6 characters long."
+    if not re.search(r'[a-zA-Z]', password) or not re.search(r'[0-9]', password):
+        return False, "Password must contain at least one letter and one number."
+    
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -119,9 +131,9 @@ def add_user(username, full_name, password):
         if conn:
             conn.close()
 
-# 🌟 هذه هي الدالة التي كانت مفقودة وتسببت في ظهور الـ ImportError
 def verify_user(username, password):
-    """Verify your username and password upon login"""
+    """Verify your username and password upon login (No hashing)."""
+    username = username.lower().strip()
     conn = None
     try:
         conn = sqlite3.connect(DB_NAME)
