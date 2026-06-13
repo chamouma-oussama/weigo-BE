@@ -1,7 +1,7 @@
 # config.py
 
 DB_NAME = "weigo_database.db"
-SERVER_HOST = '192.168.1.35'
+SERVER_HOST = '192.168.1.37'
 SERVER_PORT = 5000
 
 FEATURE_COLUMNS = [
